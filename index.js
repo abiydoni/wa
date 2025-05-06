@@ -210,19 +210,23 @@ app.get("/list-groups", async (req, res) => {
       return res.status(400).send("WhatsApp belum terhubung");
     }
 
-    const allChats = await sock.chats.all(); // Ambil semua chat
-    const groups = allChats.filter((chat) => chat.id.endsWith("@g.us"));
+    // Mengambil semua grup yang diikuti oleh nomor yang terhubung
+    const groups = await sock.groupFetchAllParticipating();
 
-    const result = groups.map((group) => ({
+    const groupList = Object.values(groups).map((group) => ({
       id: group.id,
-      name: group.name || group.subject || "Tanpa Nama",
+      name: group.subject || "Tanpa Nama",
       participants: group.participants?.length || 0,
       createdAt: group.creation || "Tidak diketahui",
+      description: group.desc || "Tidak ada deskripsi",
+      isAdmin:
+        group.participants.find((p) => p.id === sock.user.id)?.admin ===
+        "admin",
     }));
 
     res.send({
       status: "success",
-      data: result,
+      data: groupList,
     });
   } catch (error) {
     console.error("Gagal mengambil daftar group:", error);
