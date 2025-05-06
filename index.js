@@ -138,13 +138,10 @@ app.post("/send-message-group", async (req, res) => {
     return res.status(400).send("Group ID dan pesan harus diisi");
   }
 
-  // Format nomor telepon jika diawali dengan 0
-  groupId = groupId;
-
   try {
-    jid = groupId.endsWith("@g.us");
+    const jid = groupId.endsWith("@g.us") ? groupId : groupId + "@g.us";
     const sendMessage = await sock.sendMessage(jid, { text: message });
-    console.log(`Pesan berhasil dikirim ke ${groupId}`);
+    console.log(`Pesan berhasil dikirim ke ${jid}`);
     res.send({
       status: "success",
       message: "Pesan berhasil dikirim",
@@ -203,6 +200,34 @@ function sendConnectionStatus() {
     res.write(`data: ${isConnected ? "connected" : "disconnected"}\n\n`);
   });
 }
+
+// =============================================
+// Endpoint lihat daftar group
+// =============================================
+app.get("/list-groups", async (req, res) => {
+  try {
+    if (!sock || !isConnected) {
+      return res.status(400).send("WhatsApp belum terhubung");
+    }
+
+    const chats = await sock.fetchAllGroups();
+    
+    const groups = chats.map(group => ({
+      id: group.id,
+      name: group.name || 'Tanpa Nama',
+      participants: group.participants?.length || 0,
+      createdAt: group.creation || 'Tidak diketahui'
+    }));
+
+    res.send({
+      status: "success",
+      data: groups
+    });
+  } catch (error) {
+    console.error("Gagal mengambil daftar group:", error);
+    res.status(500).send("Gagal mengambil daftar group");
+  }
+});
 
 // Memulai socket WhatsApp
 startSocket();
