@@ -205,28 +205,24 @@ function sendConnectionStatus() {
 // Endpoint lihat daftar group
 // =============================================
 app.get("/list-groups", async (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
   try {
     if (!sock || !isConnected) {
       return res.status(400).send("WhatsApp belum terhubung");
     }
 
-    const chats = await sock.fetchAllGroups();
+    const allChats = await sock.chats.all(); // Ambil semua chat
+    const groups = allChats.filter((chat) => chat.id.endsWith("@g.us"));
 
-    const groups = chats.map((group) => ({
+    const result = groups.map((group) => ({
       id: group.id,
-      name: group.name || "Tanpa Nama",
+      name: group.name || group.subject || "Tanpa Nama",
       participants: group.participants?.length || 0,
       createdAt: group.creation || "Tidak diketahui",
     }));
 
     res.send({
       status: "success",
-      data: groups,
+      data: result,
     });
   } catch (error) {
     console.error("Gagal mengambil daftar group:", error);
