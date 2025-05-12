@@ -66,9 +66,6 @@ app.get("/qr", (req, res) => {
                 <body style="text-align: center; font-family: sans-serif;">
                     <h2>WhatsApp Terhubung!</h2>
                     <p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.
-                    Rest API : [host]/send-message Test : curl -X POST https://wapi.dafamsemarang.my.id/send-message \
-                                -H "Content-Type: application/json" \
-                                -d '{"phoneNumber": "628567868154", "message": "Halo, ini pesan dari WhatsApp Gateway!"}'
                     </p>
                     <script>
                         // Mendengarkan perubahan status koneksi secara real-time
@@ -76,9 +73,6 @@ app.get("/qr", (req, res) => {
                         eventSource.onmessage = function(event) {
                             if (event.data === 'connected') {
                                 document.body.innerHTML = "<h2>WhatsApp Terhubung!</h2><p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.
-                                Rest API : [host]/send-message Test : curl -X POST https://wapi.dafamsemarang.my.id/send-message \
-                                -H "Content-Type: application/json" \
-                                -d '{"phoneNumber": "628567868154", "message": "Halo, ini pesan dari WhatsApp Gateway!"}'
                                 </p>";
                             } else {
                                 document.body.innerHTML = "<h2>QR Code Belum Terhubung</h2>";
