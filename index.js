@@ -65,15 +65,13 @@ app.get("/qr", (req, res) => {
             <html>
                 <body style="text-align: center; font-family: sans-serif;">
                     <h2>WhatsApp Terhubung!</h2>
-                    <p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.
-                    </p>
+                    <p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.</p>
                     <script>
                         // Mendengarkan perubahan status koneksi secara real-time
                         const eventSource = new EventSource('/status');
                         eventSource.onmessage = function(event) {
                             if (event.data === 'connected') {
-                                document.body.innerHTML = "<h2>WhatsApp Terhubung!</h2><p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.
-                                </p>";
+                                document.body.innerHTML = "<h2>WhatsApp Terhubung!</h2><p>WhatsApp telah berhasil terhubung. Sekarang Anda dapat mengirim pesan.</p>";
                             } else {
                                 document.body.innerHTML = "<h2>QR Code Belum Terhubung</h2>";
                             }
